@@ -7,11 +7,17 @@ class AraraSession(models.Model):
     session_data = models.TextField(blank=True)
     expire_date = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'arara_session'
+
 
 class ArticleVoteStatus(models.Model):
     board_id = models.ForeignKey('Board')
     article_id = models.ForeignKey('Article')
     user_id = models.ForeignKey('User')
+
+    class Meta:
+        db_table = u'article_vote_status'
 
 
 class Article(models.Model):
@@ -36,6 +42,9 @@ class Article(models.Model):
     last_reply_date = models.DateTimeField(null=True, blank=True)
     last_reply_id = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'articles'
+
 
 class Banner(models.Model):
     content = models.TextField(blank=True)
@@ -44,10 +53,16 @@ class Banner(models.Model):
     valid = models.IntegerField(null=True, blank=True)
     weight = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'banners'
+
 
 class BbsManager(models.Model):
     board_id = models.ForeignKey('Board', null=True, blank=True)
     manager_id = models.ForeignKey('User', null=True, blank=True)
+
+    class Meta:
+        db_table = u'bbs_managers'
 
 
 class Blacklist(models.Model):
@@ -58,14 +73,23 @@ class Blacklist(models.Model):
     block_article = models.IntegerField(null=True, blank=True)
     block_message = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'blacklists'
+
 
 class BoardHeading(models.Model):
     board_id = models.ForeignKey('Board', null=True, blank=True)
     heading = models.CharField(max_length=90, blank=True)
 
+    class Meta:
+        db_table = u'board_headings'
+
 
 class BoardNotice(models.Model):
     article = models.ForeignKey('Article', primary_key=True)
+
+    class Meta:
+        db_table = u'board_notice'
 
 
 class Board(models.Model):
@@ -81,10 +105,16 @@ class Board(models.Model):
     to_read_level = models.IntegerField(null=True, blank=True)
     to_write_level = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'boards'
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=90, unique=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        db_table = u'categories'
 
 
 class File(models.Model):
@@ -96,6 +126,9 @@ class File(models.Model):
     article_id = models.ForeignKey('Article', null=True, blank=True)
     deleted = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'files'
+
 
 class Link(models.Model):
     link_name = models.CharField(max_length=90, unique=True, blank=True)
@@ -105,16 +138,25 @@ class Link(models.Model):
     deleted = models.IntegerField(null=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'links'
+
 
 class LoginSession(models.Model):
     session_key = models.CharField(max_length=120, primary_key=True)
     session_data = models.TextField(blank=True)
     expire_date = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'login_sessions'
+
 
 class LostPasswordToken(models.Model):
     user_id = models.ForeignKey('User', null=True, blank=True)
     code = models.CharField(max_length=75, blank=True)
+
+    class Meta:
+        db_table = u'lost_password_token'
 
 
 class Message(models.Model):
@@ -127,11 +169,17 @@ class Message(models.Model):
     sent_deleted = models.IntegerField(null=True, blank=True)
     read_status = models.CharField(max_length=3, blank=True)
 
+    class Meta:
+        db_table = u'messages'
+
 
 class ReadStatus(models.Model):
     user_id = models.ForeignKey('User', null=True, blank=True)
     article_id = models.ForeignKey('Article', null=True, blank=True)
     status = models.CharField(max_length=3, blank=True)
+
+    class Meta:
+        db_table = u'read_status'
 
 
 class ReadStatusOrg(models.Model):
@@ -141,21 +189,33 @@ class ReadStatusOrg(models.Model):
     read_status_numbers = models.TextField(blank=True)
     read_status_markers = models.TextField(blank=True)
 
+    class Meta:
+        db_table = u'read_status_org'
+
 
 class ScrapStatus(models.Model):
     user_id = models.ForeignKey('User')
     article_id = models.ForeignKey('Article')
+
+    class Meta:
+        db_table = u'scrap_status'
 
 
 class SelectedBoard(models.Model):
     user_id = models.ForeignKey('User', null=True, blank=True)
     board_id = models.ForeignKey('Board', null=True, blank=True)
 
+    class Meta:
+        db_table = u'selected_boards'
+
 
 class UserActivation(models.Model):
     user_id = models.ForeignKey('User', primary_key=True)
     activation_code = models.CharField(max_length=150, unique=True, blank=True)
     issued_date = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = u'user_activation'
 
 
 class User(models.Model):
@@ -180,11 +240,17 @@ class User(models.Model):
     activated_backup = models.IntegerField(null=True, blank=True)
     deleted = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        db_table = u'users'
+
 
 class Visitor(models.Model):
     total = models.IntegerField(primary_key=True)
     today = models.IntegerField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = u'visitors'
 
 
 class Welcome(models.Model):
@@ -193,4 +259,7 @@ class Welcome(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     valid = models.IntegerField(null=True, blank=True)
     weight = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        db_table = u'welcomes'
 
