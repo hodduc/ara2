@@ -120,7 +120,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'ara2',
-    'ara2.oldara',
+    'oldara',
 )
 
 # A sample logging configuration. The only tangible logging
