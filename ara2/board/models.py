@@ -1,6 +1,5 @@
 from django.db import models
-
-from ara2.models import User
+from django.contrib.auth.models import User
 
 
 class Article(models.Model):

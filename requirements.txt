@@ -1,4 +1,4 @@
-Django==1.4.3
+https://www.djangoproject.com/m/releases/1.5/Django-1.5c2.tar.gz
 MySQL-python==1.2.4
 distribute==0.6.31
 wsgiref==0.1.2
