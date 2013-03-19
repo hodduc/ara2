@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'rest_framework',
     'ara2.main',
     'ara2.board',
     'ara2.account',
@@ -151,3 +152,10 @@ LOGGING = {
         },
     }
 }
+
+REST_FRAMEWORK = {
+    #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser'),
+    'PAGINATE_BY': 10,
+}
+
+AUTH_USER_MODEL = 'account.User'
