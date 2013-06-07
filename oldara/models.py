@@ -152,7 +152,7 @@ class LoginSession(models.Model):
 
 
 class LostPasswordToken(models.Model):
-    user_id = models.ForeignKey('User', null=True, blank=True)
+    user = models.ForeignKey('User', null=True, blank=True)
     code = models.CharField(max_length=75, blank=True)
 
     class Meta:
@@ -160,9 +160,11 @@ class LostPasswordToken(models.Model):
 
 
 class Message(models.Model):
-    from_id = models.ForeignKey('User', related_name='sent_messages')
+    from_user = models.ForeignKey('User', related_name='sent_messages', \
+                        db_column="from_id") # Hack: 'from' is python keyword
     from_ip = models.CharField(max_length=45, blank=True)
-    to_id = models.ForeignKey('User', related_name='received_messages')
+    to_user = models.ForeignKey('User', related_name='received_messages', \
+                        db_column="to_id")
     sent_time = models.DateTimeField(null=True, blank=True)
     message = models.CharField(max_length=3000, blank=True)
     received_deleted = models.IntegerField(null=True, blank=True)
@@ -210,7 +212,7 @@ class SelectedBoard(models.Model):
 
 
 class UserActivation(models.Model):
-    user_id = models.ForeignKey('User', primary_key=True)
+    user = models.ForeignKey('User', primary_key=True)
     activation_code = models.CharField(max_length=150, unique=True, blank=True)
     issued_date = models.DateTimeField(null=True, blank=True)
 
