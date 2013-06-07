@@ -81,6 +81,10 @@ def accounts():
         if len(source.username) > 30:
             target.username = source.username[:30]
 
+        # Give superuser flag to sysop
+        if target.is_staff:
+            target.is_superuser = True
+
     direct_migrate(OldUser, User,
                 ('id', 'username', 'password', 'nickname', 'email',
                     'signature', 'self_introduction', 'last_logout_time',
