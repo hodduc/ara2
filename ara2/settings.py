@@ -168,6 +168,17 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.User'
 
+PASSWORD_HASHERS = (
+    'ara2.account.hashers.OldAraPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
 try:
     from local_settings import *
 except ImportError:

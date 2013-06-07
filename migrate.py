@@ -58,6 +58,9 @@ def accounts():
     from oldara.models import User as OldUser
 
     def user_extra(source, target):
+        # password migration. Add algorithm prefix.
+        target.password = 'arara-old$1$$' + source.password.strip()
+
         # possible default_language: eng, en, kor, ko_KR, ko, nor
         if source.default_language in ('kor', 'ko', 'ko_KR'):
             target.default_language = 'ko'
