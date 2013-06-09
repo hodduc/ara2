@@ -126,9 +126,29 @@ def accounts():
                     'received_deleted', 'sent_deleted', 'read_status'),
                 extra=message_extra)
 
+def misc():
+    '''
+    main/models.py와 기타 모델에 대한 마이그레이션을 진행함
+    '''
+
+    from oldara.models import Banner as OldBanner
+    from ara2.main.models import Banner
+
+    direct_migrate(OldBanner, Banner,
+            ('id', 'content', 'issued_date', 'due_date', 'valid', 'weight'))
+
+    from oldara.models import Visitor as OldVisitor
+    from ara2.main.models import Visitor
+
+    direct_migrate(OldVisitor, Visitor,
+            ('total', 'today', 'date'))
+
 def main():
     # Step 1. Migrate Accounts
     accounts()
+
+    # Step 2. Migrate misc
+    misc()
 
 if __name__ == '__main__':
     main()
