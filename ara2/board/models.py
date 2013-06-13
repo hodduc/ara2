@@ -3,50 +3,60 @@ from ara2.account.models import User
 
 
 class Article(models.Model):
+    # Field from users
     title = models.CharField(max_length=600, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    heading_id = models.ForeignKey('BoardHeading', null=True, blank=True)
     content = models.TextField(blank=True)
-    author_id = models.ForeignKey(User, null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True)
+
+    # Field for categorization
+    board = models.ForeignKey('Board', null=True, blank=True)
+    heading = models.ForeignKey('BoardHeading', null=True, blank=True)
+
+    # Field about author
+    author = models.ForeignKey(User, null=True, blank=True)
     author_nickname = models.CharField(max_length=120, blank=True)
     author_ip = models.CharField(max_length=45, blank=True)
-    date = models.DateTimeField(null=True, blank=True)
+
+    # Field about statistics
     hit = models.IntegerField(null=True, blank=True)
     positive_vote = models.IntegerField(null=True, blank=True)
     negative_vote = models.IntegerField(null=True, blank=True)
-    deleted = models.IntegerField(null=True, blank=True)
-    root_id = models.ForeignKey('Article', related_name='articles', null=True, blank=True)
-    parent_id = models.ForeignKey('Article', related_name='+', null=True, blank=True)
+
+    # Flags
+    deleted = models.BooleanField()
+    destroyed = models.BooleanField()
+    is_searchable = models.BooleanField(default=True)
+
+    # Field about relationship with other articles
+    root = models.ForeignKey('Article', related_name='articles', null=True, blank=True)
+    parent = models.ForeignKey('Article', related_name='+', null=True, blank=True)
     reply_count = models.IntegerField()
-    is_searchable = models.IntegerField()
     last_modified_date = models.DateTimeField(null=True, blank=True)
-    destroyed = models.IntegerField(null=True, blank=True)
     last_reply_date = models.DateTimeField(null=True, blank=True)
     last_reply_id = models.IntegerField(null=True, blank=True)
 
 
 class ArticleVoteStatus(models.Model):
-    board_id = models.ForeignKey('Board')
-    article_id = models.ForeignKey('Article')
-    user_id = models.ForeignKey(User)
+    article = models.ForeignKey('Article')
+    user = models.ForeignKey(User)
 
 
 class BbsManager(models.Model):
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    manager_id = models.ForeignKey(User, null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
+    manager = models.ForeignKey(User, null=True, blank=True)
 
 
 class Blacklist(models.Model):
-    user_id = models.ForeignKey(User, null=True, blank=True)
-    blacklisted_user_id = models.ForeignKey(User, related_name='+', null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
+    blacklisted_user = models.ForeignKey(User, related_name='+', null=True, blank=True)
     blacklisted_date = models.DateTimeField(null=True, blank=True)
     last_modified_date = models.DateTimeField(null=True, blank=True)
-    block_article = models.IntegerField(null=True, blank=True)
-    block_message = models.IntegerField(null=True, blank=True)
+    block_article = models.BooleanField()
+    block_message = models.BooleanField()
 
 
 class BoardHeading(models.Model):
-    board_id = models.ForeignKey('Board', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
     heading = models.CharField(max_length=90, blank=True)
 
 
@@ -55,15 +65,21 @@ class BoardNotice(models.Model):
 
 
 class Board(models.Model):
-    category_id = models.ForeignKey('Category', null=True, blank=True)
+    TYPE_CHOICES = (
+            (0, 'Board'),
+            (1, 'Gallery'),
+            (2, 'Anonymous Board'),
+    )
+
+    category = models.ForeignKey('Category', null=True, blank=True)
     board_name = models.CharField(max_length=90, unique=True, blank=True)
     board_alias = models.CharField(max_length=90, blank=True)
     board_description = models.CharField(max_length=900, blank=True)
-    deleted = models.IntegerField(null=True, blank=True)
-    read_only = models.IntegerField(null=True, blank=True)
-    hide = models.IntegerField(null=True, blank=True)
+    deleted = models.BooleanField()
+    read_only = models.BooleanField()
+    hide = models.BooleanField()
     order = models.IntegerField(null=True, blank=True)
-    type = models.IntegerField(null=True, blank=True)
+    type = models.IntegerField(null=True, blank=True, choices=TYPE_CHOICES)
     to_read_level = models.IntegerField(null=True, blank=True)
     to_write_level = models.IntegerField(null=True, blank=True)
 
@@ -77,31 +93,17 @@ class File(models.Model):
     filename = models.CharField(max_length=600, blank=True)
     saved_filename = models.CharField(max_length=600, blank=True)
     filepath = models.TextField(blank=True)
-    user_id = models.ForeignKey(User, null=True, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    article_id = models.ForeignKey('Article', null=True, blank=True)
-    deleted = models.IntegerField(null=True, blank=True)
-
-
-class ReadStatus(models.Model):
-    user_id = models.ForeignKey(User, null=True, blank=True)
-    article_id = models.ForeignKey('Article', null=True, blank=True)
-    status = models.CharField(max_length=3, blank=True)
-
-
-class ReadStatusOrg(models.Model):
-    user_id = models.ForeignKey(User, null=True, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    read_status_data = models.TextField(blank=True)
-    read_status_numbers = models.TextField(blank=True)
-    read_status_markers = models.TextField(blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
+    article = models.ForeignKey('Article', null=True, blank=True)
+    deleted = models.BooleanField()
 
 
 class ScrapStatus(models.Model):
-    user_id = models.ForeignKey(User)
-    article_id = models.ForeignKey('Article')
+    user = models.ForeignKey(User)
+    article = models.ForeignKey('Article')
 
 
 class SelectedBoard(models.Model):
-    user_id = models.ForeignKey(User, null=True, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)

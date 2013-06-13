@@ -12,9 +12,9 @@ class AraraSession(models.Model):
 
 
 class ArticleVoteStatus(models.Model):
-    board_id = models.ForeignKey('Board')
-    article_id = models.ForeignKey('Article')
-    user_id = models.ForeignKey('User')
+    board = models.ForeignKey('Board')
+    article = models.ForeignKey('Article')
+    user = models.ForeignKey('User')
 
     class Meta:
         db_table = u'article_vote_status'
@@ -22,10 +22,10 @@ class ArticleVoteStatus(models.Model):
 
 class Article(models.Model):
     title = models.CharField(max_length=600, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    heading_id = models.ForeignKey('BoardHeading', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
+    heading = models.ForeignKey('BoardHeading', null=True, blank=True)
     content = models.TextField(blank=True)
-    author_id = models.ForeignKey('User', null=True, blank=True)
+    author = models.ForeignKey('User', null=True, blank=True)
     author_nickname = models.CharField(max_length=120, blank=True)
     author_ip = models.CharField(max_length=45, blank=True)
     date = models.DateTimeField(null=True, blank=True)
@@ -33,14 +33,14 @@ class Article(models.Model):
     positive_vote = models.IntegerField(null=True, blank=True)
     negative_vote = models.IntegerField(null=True, blank=True)
     deleted = models.IntegerField(null=True, blank=True)
-    root_id = models.ForeignKey('Article', related_name='articles', null=True, blank=True)
-    parent_id = models.ForeignKey('Article', related_name='+', null=True, blank=True)
+    root = models.ForeignKey('Article', related_name='articles', null=True, blank=True)
+    parent = models.ForeignKey('Article', related_name='+', null=True, blank=True)
     reply_count = models.IntegerField()
     is_searchable = models.IntegerField()
     last_modified_date = models.DateTimeField(null=True, blank=True)
     destroyed = models.IntegerField(null=True, blank=True)
     last_reply_date = models.DateTimeField(null=True, blank=True)
-    last_reply_id = models.IntegerField(null=True, blank=True)
+    last_reply_id = models.IntegerField(null=True, blank=True) # not ForeignKey
 
     class Meta:
         db_table = u'articles'
@@ -58,16 +58,16 @@ class Banner(models.Model):
 
 
 class BbsManager(models.Model):
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    manager_id = models.ForeignKey('User', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
+    manager = models.ForeignKey('User', null=True, blank=True)
 
     class Meta:
         db_table = u'bbs_managers'
 
 
 class Blacklist(models.Model):
-    user_id = models.ForeignKey('User', null=True, blank=True)
-    blacklisted_user_id = models.ForeignKey('User', related_name='+', null=True, blank=True)
+    user = models.ForeignKey('User', null=True, blank=True)
+    blacklisted_user = models.ForeignKey('User', related_name='+', null=True, blank=True)
     blacklisted_date = models.DateTimeField(null=True, blank=True)
     last_modified_date = models.DateTimeField(null=True, blank=True)
     block_article = models.IntegerField(null=True, blank=True)
@@ -78,7 +78,7 @@ class Blacklist(models.Model):
 
 
 class BoardHeading(models.Model):
-    board_id = models.ForeignKey('Board', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
     heading = models.CharField(max_length=90, blank=True)
 
     class Meta:
@@ -93,7 +93,7 @@ class BoardNotice(models.Model):
 
 
 class Board(models.Model):
-    category_id = models.ForeignKey('Category', null=True, blank=True)
+    category = models.ForeignKey('Category', null=True, blank=True)
     board_name = models.CharField(max_length=90, unique=True, blank=True)
     board_alias = models.CharField(max_length=90, blank=True)
     board_description = models.CharField(max_length=900, blank=True)
@@ -121,9 +121,9 @@ class File(models.Model):
     filename = models.CharField(max_length=600, blank=True)
     saved_filename = models.CharField(max_length=600, blank=True)
     filepath = models.TextField(blank=True)
-    user_id = models.ForeignKey('User', null=True, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
-    article_id = models.ForeignKey('Article', null=True, blank=True)
+    user = models.ForeignKey('User', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
+    article = models.ForeignKey('Article', null=True, blank=True)
     deleted = models.IntegerField(null=True, blank=True)
 
     class Meta:
@@ -152,7 +152,7 @@ class LoginSession(models.Model):
 
 
 class LostPasswordToken(models.Model):
-    user_id = models.ForeignKey('User', null=True, blank=True)
+    user = models.ForeignKey('User', null=True, blank=True)
     code = models.CharField(max_length=75, blank=True)
 
     class Meta:
@@ -160,9 +160,11 @@ class LostPasswordToken(models.Model):
 
 
 class Message(models.Model):
-    from_id = models.ForeignKey('User', related_name='sent_messages')
+    from_user = models.ForeignKey('User', related_name='sent_messages', \
+                        db_column="from_id") # Hack: 'from' is python keyword
     from_ip = models.CharField(max_length=45, blank=True)
-    to_id = models.ForeignKey('User', related_name='received_messages')
+    to_user = models.ForeignKey('User', related_name='received_messages', \
+                        db_column="to_id")
     sent_time = models.DateTimeField(null=True, blank=True)
     message = models.CharField(max_length=3000, blank=True)
     received_deleted = models.IntegerField(null=True, blank=True)
@@ -194,23 +196,23 @@ class ReadStatusOrg(models.Model):
 
 
 class ScrapStatus(models.Model):
-    user_id = models.ForeignKey('User')
-    article_id = models.ForeignKey('Article')
+    user = models.ForeignKey('User')
+    article = models.ForeignKey('Article')
 
     class Meta:
         db_table = u'scrap_status'
 
 
 class SelectedBoard(models.Model):
-    user_id = models.ForeignKey('User', null=True, blank=True)
-    board_id = models.ForeignKey('Board', null=True, blank=True)
+    user = models.ForeignKey('User', null=True, blank=True)
+    board = models.ForeignKey('Board', null=True, blank=True)
 
     class Meta:
         db_table = u'selected_boards'
 
 
 class UserActivation(models.Model):
-    user_id = models.ForeignKey('User', primary_key=True)
+    user = models.ForeignKey('User', primary_key=True)
     activation_code = models.CharField(max_length=150, unique=True, blank=True)
     issued_date = models.DateTimeField(null=True, blank=True)
 
