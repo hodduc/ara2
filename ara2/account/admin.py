@@ -6,10 +6,18 @@ from django.utils.translation import ugettext_lazy as _
 
 from ara2.account import models
 
+class LostPasswordTokenAdmin(admin.ModelAdmin):
+    raw_id_fields = ('user', )
 
-admin.site.register(models.LostPasswordToken)
-admin.site.register(models.UserActivation)
-admin.site.register(models.Message)
+class UserActivationAdmin(admin.ModelAdmin):
+    raw_id_fields = ('user', )
+
+class MessageAdmin(admin.ModelAdmin):
+    raw_id_fields = ('from_user', 'to_user')
+
+admin.site.register(models.LostPasswordToken, LostPasswordTokenAdmin)
+admin.site.register(models.UserActivation, UserActivationAdmin)
+admin.site.register(models.Message, MessageAdmin)
 
 
 class UserChangeForm(forms.ModelForm):
