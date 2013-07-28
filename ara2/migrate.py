@@ -99,7 +99,7 @@ def accounts():
     '''
 
     # Migrate User.
-    from ara2.account.models import User
+    from ara2.models import User
     from oldara.models import User as OldUser
 
     def user_extra(source, target):
@@ -145,13 +145,13 @@ def accounts():
     user_list = OldUser.objects.values('id').all()
 
     # Migrate LostPasswordToken. Depends on User.
-    from ara2.account.models import LostPasswordToken
+    from ara2.models import LostPasswordToken
     from oldara.models import LostPasswordToken as OldLostPasswordToken
     direct_migrate(OldLostPasswordToken, LostPasswordToken,
                 ('id', 'user_id', 'code'))
 
     # Migrate UserActivation. Depends on User.
-    from ara2.account.models import UserActivation
+    from ara2.models import UserActivation
     from oldara.models import UserActivation as OldUserActivation
 
     direct_migrate(OldUserActivation, UserActivation,
@@ -159,7 +159,7 @@ def accounts():
                 filter_func=lambda queryset: queryset.filter(user_id__in=user_list))
 
     # Migrate Message. Depends on User.
-    from ara2.account.models import Message
+    from ara2.models import Message
     from oldara.models import Message as OldMessage
 
     def message_extra(source, target):
@@ -177,13 +177,13 @@ def misc():
     '''
 
     from oldara.models import Banner as OldBanner
-    from ara2.main.models import Banner
+    from ara2.models import Banner
 
     direct_migrate(OldBanner, Banner,
             ('id', 'content', 'issued_date', 'due_date', 'valid', 'weight'))
 
     from oldara.models import Visitor as OldVisitor
-    from ara2.main.models import Visitor
+    from ara2.models import Visitor
 
     direct_migrate(OldVisitor, Visitor,
             ('total', 'today', 'date'))
@@ -194,13 +194,13 @@ def boards():
     '''
 
     from oldara.models import Category as OldCategory
-    from ara2.board.models import Category
+    from ara2.models import Category
 
     direct_migrate(OldCategory, Category,
             ('id', 'category_name', 'order'))
 
     from oldara.models import Board as OldBoard
-    from ara2.board.models import Board
+    from ara2.models import Board
 
     direct_migrate(OldBoard, Board,
             ('id', 'category_id', 'board_name', 'board_alias', 'board_description',
@@ -208,7 +208,7 @@ def boards():
                 'to_write_level'))
 
     from oldara.models import BoardHeading as OldBoardHeading
-    from ara2.board.models import BoardHeading
+    from ara2.models import BoardHeading
 
     direct_migrate(OldBoardHeading, BoardHeading,
             ('id', 'board_id', 'heading'))
@@ -217,7 +217,7 @@ def boards():
     # Article과 Vote는 테이블이 너무 크기 때문에, MySQL 쿼리로 직접 옮긴다
     from ara2.settings import DATABASES
     from oldara.models import Article as OldArticle
-    from ara2.board.models import Article
+    from ara2.models import Article
 
     copy_table(DATABASES['oldara'], OldArticle._meta.db_table,
                 DATABASES['default'], Article._meta.db_table,
@@ -235,7 +235,7 @@ def boards():
 #                'last_modified_date', 'last_reply_date', 'last_reply_id'))
 
     from oldara.models import ArticleVoteStatus as OldVote
-    from ara2.board.models import ArticleVoteStatus as Vote
+    from ara2.models import ArticleVoteStatus as Vote
 
     copy_table(DATABASES['oldara'], OldVote._meta.db_table,
                 DATABASES['default'], Vote._meta.db_table,
@@ -245,39 +245,39 @@ def boards():
 #            ('id', 'article_id', 'user_id'))
 
     from oldara.models import BbsManager as OldManager
-    from ara2.board.models import BbsManager
+    from ara2.models import BbsManager
 
     direct_migrate(OldManager, BbsManager,
             ('id', 'board_id', 'manager_id'))
 
     from oldara.models import Blacklist as OldBlacklist
-    from ara2.board.models import Blacklist
+    from ara2.models import Blacklist
 
     direct_migrate(OldBlacklist, Blacklist,
             ('id', 'user_id', 'blacklisted_user_id', 'blacklisted_date',
                 'last_modified_date', 'block_article', 'block_message'))
 
     from oldara.models import BoardNotice as OldNotice
-    from ara2.board.models import BoardNotice
+    from ara2.models import BoardNotice
 
     direct_migrate(OldNotice, BoardNotice,
             ('article_id', ))
 
     from oldara.models import File as OldFile
-    from ara2.board.models import File
+    from ara2.models import File
 
     direct_migrate(OldFile, File,
             ('id', 'filename', 'saved_filename', 'filepath',
                 'user_id', 'board_id', 'article_id', 'deleted'))
 
     from oldara.models import ScrapStatus as OldScrap
-    from ara2.board.models import ScrapStatus
+    from ara2.models import ScrapStatus
 
     direct_migrate(OldScrap, ScrapStatus,
             ('id', 'user_id', 'article_id'))
 
     from oldara.models import SelectedBoard as OldSelectedBoard
-    from ara2.board.models import SelectedBoard
+    from ara2.models import SelectedBoard
 
     direct_migrate(OldSelectedBoard, SelectedBoard,
             ('id', 'user_id', 'board_id'))

@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
 from django.db import models
-from ara2.account.models import User
+from django.core import validators
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+
+from .account import User
 
 
 class Article(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     # Field from users
     title = models.CharField(max_length=600, blank=True)
     content = models.TextField(blank=True)
@@ -37,16 +45,25 @@ class Article(models.Model):
 
 
 class ArticleVoteStatus(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     article = models.ForeignKey('Article')
     user = models.ForeignKey(User)
 
 
 class BbsManager(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     board = models.ForeignKey('Board', null=True, blank=True)
     manager = models.ForeignKey(User, null=True, blank=True)
 
 
 class Blacklist(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     user = models.ForeignKey(User, null=True, blank=True)
     blacklisted_user = models.ForeignKey(User, related_name='+', null=True, blank=True)
     blacklisted_date = models.DateTimeField(null=True, blank=True)
@@ -56,15 +73,24 @@ class Blacklist(models.Model):
 
 
 class BoardHeading(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     board = models.ForeignKey('Board', null=True, blank=True)
     heading = models.CharField(max_length=90, blank=True)
 
 
 class BoardNotice(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     article = models.ForeignKey('Article', primary_key=True)
 
 
 class Board(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     TYPE_CHOICES = (
             (0, 'Board'),
             (1, 'Gallery'),
@@ -85,11 +111,17 @@ class Board(models.Model):
 
 
 class Category(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     category_name = models.CharField(max_length=90, unique=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
 
 
 class File(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     filename = models.CharField(max_length=600, blank=True)
     saved_filename = models.CharField(max_length=600, blank=True)
     filepath = models.TextField(blank=True)
@@ -100,10 +132,16 @@ class File(models.Model):
 
 
 class ScrapStatus(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     user = models.ForeignKey(User)
     article = models.ForeignKey('Article')
 
 
 class SelectedBoard(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     user = models.ForeignKey(User, null=True, blank=True)
     board = models.ForeignKey('Board', null=True, blank=True)

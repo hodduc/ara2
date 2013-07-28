@@ -4,7 +4,11 @@ from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 
+
 class User(AbstractUser):
+    class Meta:
+        app_label = 'ara2'
+
     LANGUAGE_CHOICES = (
         # ISO 639-1 language code
         ('ko', u'한국어'), # default
@@ -42,17 +46,26 @@ class User(AbstractUser):
 
 
 class LostPasswordToken(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     user = models.ForeignKey(User)
     code = models.CharField(max_length=75)
 
 
 class UserActivation(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     user = models.ForeignKey(User, primary_key=True)
     activation_code = models.CharField(max_length=150)
     issued_date = models.DateTimeField() # XXX: auto_now_add
 
 
 class Message(models.Model):
+    class Meta:
+        app_label = 'ara2'
+
     from_user = models.ForeignKey(User, related_name='sent_messages')
     from_ip = models.CharField(max_length=45, blank=True)
     to_user = models.ForeignKey(User, related_name='received_messages')

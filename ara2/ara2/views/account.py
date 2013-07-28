@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from ara2.account.models import User
-from ara2.account.serializers import UserSerializer
+from ara2.models import User
+from ara2.serializers import UserSerializer
 
 
 @api_view(['GET'])

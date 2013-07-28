@@ -126,9 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'rest_framework',
-    'ara2.main',
-    'ara2.board',
-    'ara2.account',
+    'ara2',
     'oldara',
 )
 
@@ -166,7 +164,7 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
 }
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'ara2.User'
 
 PASSWORD_HASHERS = (
     'ara2.account.hashers.OldAraPasswordHasher',
